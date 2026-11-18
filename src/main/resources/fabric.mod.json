@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "wallsight",
+  "version": "${version}",
+  "name": "Dark_Venice's Wallsight",
+  "description": "Client-side knockback guard and through-walls ESP for players, hostile mobs and containers, with configurable colours.",
+  "license": "All-Rights-Reserved",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.wallsight.client.WallSightClient"
+    ],
+    "modmenu": [
+      "com.example.wallsight.client.WallSightModMenu"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "wallsight.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "26.1.2",
+    "java": ">=25",
+    "fabric-api": "*",
+    "owo-lib": ">=0.13.0"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "sodium": "*"
+  }
+}

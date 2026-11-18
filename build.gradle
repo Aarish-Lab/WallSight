@@ -1,0 +1,68 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+base {
+	archivesName = 'DarkVenice_Wallsight_26_1_2'
+}
+
+repositories {
+	maven {
+		name = 'Terraformers'
+		url = 'https://maven.terraformersmc.com/'
+	}
+	maven {
+		name = 'Wisp Forest releases'
+		url = 'https://maven.wispforest.io/releases'
+	}
+	maven {
+		name = 'Wisp Forest'
+		url = 'https://maven.wispforest.io'
+	}
+}
+
+loom {
+	mods {
+		"wallsight" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// owo-lib: the settings screen is built with owo-ui. Players install owo-lib as a separate mod.
+	compileOnly("io.wispforest:owo-lib:${project.owo_version}") {
+		transitive = false
+	}
+	// Mod Menu API: only for the optional "configure" button.
+	compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {
+		transitive = false
+	}
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+// The deliverable is exactly build/libs/DarkVenice_Wallsight_26_1_2.jar (no version in the file name).
+jar {
+	archiveVersion = ''
+}
