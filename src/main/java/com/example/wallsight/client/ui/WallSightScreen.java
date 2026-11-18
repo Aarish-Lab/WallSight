@@ -140,13 +140,14 @@ public class WallSightScreen extends BaseOwoScreen<FlowLayout> {
         picker.selectedColor(Color.ofRgb(colors.rgb(colors.selected())));
         picker.onChanged().subscribe(color -> colors.applyPicker(color.rgb()));
         content.child(picker);
-        content.child(UIComponents.wrapVanillaWidget(UIComponents.button(Component.literal("Reset colours"), button -> {
+        ButtonComponent resetButton = UIComponents.button(Component.literal("Reset colours"), button -> {
             colors.reset(t -> t.defaultRgb);
             // a box holding invalid text matches no colour change, so refresh every box explicitly
             for (ColorTarget t : ColorTarget.values()) {
                 hexBoxes.get(t).text(HexColor.format(colors.rgb(t)));
             }
-        })));
+        });
+        content.child(UIComponents.wrapVanillaWidget(resetButton));
     }
 
     private FlowLayout colourRow(ColorTarget target) {
@@ -155,7 +156,9 @@ public class WallSightScreen extends BaseOwoScreen<FlowLayout> {
         row.alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
 
         ButtonComponent pick = UIComponents.button(Component.literal(pickLabel(target)), button -> colors.select(target));
-        pick.sizing(Sizing.fixed(86));
+        // Size the wrapper, not the vanilla ButtonComponent: the wrapper is the owo layout child.
+        var pickWrapper = UIComponents.wrapVanillaWidget(pick);
+        pickWrapper.horizontalSizing(Sizing.fixed(86));
         pickButtons.put(target, pick);
 
         TextBoxComponent hex = UIComponents.textBox(Sizing.fixed(62), HexColor.format(colors.rgb(target)));
@@ -168,7 +171,7 @@ public class WallSightScreen extends BaseOwoScreen<FlowLayout> {
         swatch.color(Color.ofRgb(colors.rgb(target)));
         swatches.put(target, swatch);
 
-        row.child(UIComponents.wrapVanillaWidget(pick));
+        row.child(pickWrapper);
         row.child(UIComponents.wrapVanillaWidget(hex));
         row.child(swatch);
         return row;
@@ -224,7 +227,7 @@ public class WallSightScreen extends BaseOwoScreen<FlowLayout> {
         return label;
     }
 
-    // owo 0.13.x exposes these controls as vanilla widgets; wrap them before mounting in an owo layout.
+    // Wrap vanilla widgets before adding them to owo layouts.
     private UIComponent checkbox(String text, boolean value, Consumer<Boolean> onChanged) {
         CheckboxComponent box = UIComponents.checkbox(Component.literal(text));
         box.checked(value);
@@ -251,8 +254,8 @@ public class WallSightScreen extends BaseOwoScreen<FlowLayout> {
     private FlowLayout footer() {
         FlowLayout footer = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         footer.horizontalAlignment(HorizontalAlignment.RIGHT);
-        footer.child(UIComponents.wrapVanillaWidget(
-                UIComponents.button(Component.literal("Done"), button -> this.onClose())));
+        ButtonComponent doneButton = UIComponents.button(Component.literal("Done"), button -> this.onClose());
+        footer.child(UIComponents.wrapVanillaWidget(doneButton));
         return footer;
     }
 }
